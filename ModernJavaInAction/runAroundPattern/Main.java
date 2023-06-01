@@ -36,10 +36,10 @@ public class Main {
          * <- 이걸로 '람다 사용하여 파라미터 넘기기'가 더 직관적으로 이해 가는 듯..
          */
         System.out.println("3. 1과 2의 중간 단계(?)");
-        BufferedReaderProcessor oneLineReadRamba = (BufferedReader br) -> br.readLine();
-        BufferedReaderProcessor twoLineReadRamba = (BufferedReader br) -> br.readLine() + br.readLine();
-        System.out.println(fp.processfile(oneLineReadRamba)); //1줄 읽기
-        System.out.println(fp.processfile(twoLineReadRamba)); //2줄 읽기
+        BufferedReaderProcessor oneLineReadLambda = (BufferedReader br) -> br.readLine();
+        BufferedReaderProcessor twoLineReadLambda = (BufferedReader br) -> br.readLine() + br.readLine();
+        System.out.println(fp.processfile(oneLineReadLambda)); //1줄 읽기
+        System.out.println(fp.processfile(twoLineReadLambda)); //2줄 읽기
         System.out.println("*************************************************************");
 
 
