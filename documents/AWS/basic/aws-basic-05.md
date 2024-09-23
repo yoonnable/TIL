@@ -49,3 +49,7 @@
 - MFA를 활성화 하기
 - AccessKey 대신 역할 활용
 - IAM 자격 증명 보고서 활용하기
+
+
+### Reference
+-  https://www.youtube.com/playlist?list=PLfth0bK2MgIan-SzGpHIbfnCnjj583K2m
