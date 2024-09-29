@@ -33,7 +33,31 @@
 * self-descriptive messages ❌
 * hypermedia as the engine of application state (HATEOAS) ❌
 
-### Self-descrip
+### Self-descriptive
+* 메시지는 스스로를 설명해야 한다. => 메시지만 보고 모든 걸 다 알아야 한다.
+    * 요청 메시지에 목적지가 없으면, self-descriptive하지 않다.
+    * 응답 메시지에 문법 타입이 없으면, self-descriptive하지 않다.
+### HATEOAS
+* 애플리케이션의 상태는 Hyperlink를 이용해 전이 되어야 한다.
+    * JSON으로 표현한다면, 메시지에 "Link"라는 헤더가 있다.
+        * Link : 이 메시지, 리소스와 하이퍼링크로 연결되어 있는 다른 시소르를 가리킬 수 있는 기능을 제공. (표준 헤더)
+     ```
+     HTTP/1.1 200OK
+     Content-Type: application/json
+     Link: </articles/1>; rel = "previous", // 이전 게시물의 uri가 `/articles/1` 이다.
+           </articles/3>; rel = "next"; // 다음 게시물의 uri는 `/articles/3` 이다.
+        {
+            "title": "The second article",
+            "contents": "..."
+        }
+     ```
+
+     * 혼자 개발하거나, 진화에 관심이 없다면 REST를 신경쓰지 않아도 된다.
+     * self-descriptive는 확장에 용이하고, HATEOAS는 동적 변경이 가능하므로 독립적 진화에 도움이 되는게 맞다.
+     * self-descriptive에 부합하는 API 만들기 -> Mediatype 정의 -> 자동화 도구 swagger, [Spring REST Docs](../Spring/Spring-REST-Docs.md) 사용!
+
+
+
 
 
 

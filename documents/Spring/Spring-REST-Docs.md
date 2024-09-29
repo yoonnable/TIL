@@ -172,6 +172,15 @@ Unresolved directive in index.adoc - include::{snippets}/get-a-book/response-bod
 * `:snippets: build/generated-snippets` 이렇게 snippets에 경로 저장
 * adoc 문법 모르는 주니어 개발자의 역경...
 * 덕분에 해결방법 찾으면서 추가로 좋은 설정 몇 개 알아냄
+    * `:snippets: build/generated-snippets` : snippets라는 속성을 build/generated-snippets로 정의
+    * `:doctype: book` : API 문서의 형식을 지정
+        * article, book, manpage, inline을 지원
+        * 기본값은 article
+    * `:source-highlighter: highlightjs` : 소스코드 강조하는 라이브러리 지정
+    * `:toc: left` : 목차 위치 지정
+        * auto(문서 최상단), left, right
+    * `:toclevels: 3` : 목차에 표시할 제목의 단계 지정 (3단계 제목까지 표시하는 코드)
+    * `:sectlinks:` : 각 세션 제목을 하이퍼링크로 설정
 
 
 
