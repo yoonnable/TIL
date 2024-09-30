@@ -140,6 +140,24 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 * `build/asciidoc/*.html` 이 경로에 `.html`파일이 만들어 진다.
     * [안될 시 해결 방법](#-asciidoctor를-통해-indexadoc-파일을-읽어서-indexhtml-파일을-생성하는-작업에서-indexadoc-파일-내-including한-경로를-찾지-못해-발생하는-문제)
     * Maven은 경로 다름 주의
+#### 3. JSON 예쁘게 만들기
+* 우리가 기대한 결과
+```
+{
+    "id":1,
+    "title":"Spring REST Docs",
+    "author":"spring",
+    "publishedAt":"2024-09-27T08:43:41.898+00:00"
+}
+```
+* 실제 출력되는 모습
+```
+{"id":1,"title":"Spring REST Docs","author":"spring","publishedAt":"2024-09-27T08:43:41.898+00:00"}
+```
+* 우리가 기대한 결과로 바꿔주기
+
+#### 4. HTML 예쁘게 만들기
+* 
 
 
 
@@ -181,7 +199,36 @@ Unresolved directive in index.adoc - include::{snippets}/get-a-book/response-bod
         * auto(문서 최상단), left, right
     * `:toclevels: 3` : 목차에 표시할 제목의 단계 지정 (3단계 제목까지 표시하는 코드)
     * `:sectlinks:` : 각 세션 제목을 하이퍼링크로 설정
+* index.adoc 코드
+```adoc
+:snippets: build/generated-snippets
+:doctype: book
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
 
+[[common]]
+== API 명세서
+=== 공통 정보
+|===
+| 환경 | -
+| 개발서버 | -
+| 운영서버 | -
+|===
+
+[[user]]
+=== 사용자용 API
+[[book]]
+==== Book 조회
+====== Request Example
+include::{snippets}/get-a-book/http-request.adoc[]
+===== Response Body
+include::{snippets}/get-a-book/http-response.adoc[]
+====== Response Example
+include::{snippets}/get-a-book/response-body.adoc[]
+&nbsp;
+```
 
 
 ## Reference
@@ -189,4 +236,5 @@ https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#gettin
 https://spring.io/projects/spring-restdocs
 https://www.youtube.com/watch?v=A3WDAVQP32k
 https://www.youtube.com/watch?v=BoVpTSsTuVQ
+https://velog.io/@glencode/Spring-REST-Docs-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-aka.-%EC%9E%90%EB%8F%99-API-%EB%AC%B8%EC%84%9C%ED%99%94#indexadoc
 https://colabear754.tistory.com/218
