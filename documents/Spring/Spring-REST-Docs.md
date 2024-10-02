@@ -23,7 +23,7 @@
 ## Spring REST Docs 적용하기 (with Gradle and Junit5)
 ### 1. 의존성
 * Spring Web, Spring REST Docs
-```java
+```gradle
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -92,7 +92,7 @@ class BookControllerTest {
 1. 문서 snippet을 생성하는 첫 번째 단계는 `RestDocumentationExtension`을 테스트 클래스에 적용한다.
     * `RESTDocumentationExtension`은 프로젝트의 빌드 도구를 기반으로 출력 디렉토리로 자동 구성됨
         * `build/build/generated-snippets` (Maven은 경로 다름 주의)
-        ```java
+        ```gradle
         // build.gradle
         
         ...
@@ -124,7 +124,41 @@ class BookControllerTest {
 * 테스트가 성공하면, `build/generated-snippets/get-a-book/`이 경로에 snippet 자동 생성! 
 * 여기까지만 해도 Spring REST Docs로 API 문서 자동화 끝!!!!
 * But, 이대로 두기엔 가독성이 너무 떨어지므로 좀 더 보기 좋게 예쁘게 개선해보자.
-### 4. API 문서를 예쁘게 만들기
+### 4. 그 전에 Gradle 추가 설정하기
+* 프로젝트를 build할 때 자동으로 테스트가 되고, 또 테스트를 여러번 하면 기존 snippet은 삭제하고 새로운 snippet이 잘 생성되도록 설정하기
+```gradle
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    set('docsOutputDir', file("build/docs/asciidoc"))	// API 문서가 생성되는 경로
+    set('projectDocsDir', file("src/main/resources/static/docs"))	// 생성된 API 문서를 복사할 경로
+}
+ 
+tasks.named('bootJar') {
+    dependsOn 'asciidoctor'	// asciidoctor 수행 후 bootJar 수행
+}
+ 
+tasks.named('test') {
+    doFirst { delete(snippetsDir) }	// test 수행 전 실행
+    outputs.dir snippetsDir
+}
+ 
+tasks.named('asciidoctor') {
+    doFirst {	// asciidoctor 수행 전 실행
+        delete(docsOutputDir)	// 기존 생성된 API 문서 삭제
+        delete(projectDocsDir)	// 기존에 복사된 API 문서 삭제
+    }
+    inputs.dir snippetsDir
+    dependsOn test
+    doLast {	// asciidoctor 수행 완료 후 실행
+        copy {	// 생성된 API 문서를 지정된 경로에 복사
+            from docsOutputDir
+            into projectDocsDir
+        }
+    }
+}
+```
+* 마지막 `asciidoctor`작업의 `doLast`에 추가한 내용은 API 문서가 생성된 이후에 서버에 접속하여 바로 확인할 수 있도록 build 디렉토리 내에 생성된 API 문서를 프로젝트의 resources/static으로 복사하는 것이다.
+### 5. API 문서를 예쁘게 만들기
 #### 1. `.adoc`파일 만들기
 * `.adoc`파일을 만들어야 한다. 경로는 아래와 같다.
     * `src/docs/asciidoc/*.adoc`(파일명은 원하는대로, 일반적으로 index)
@@ -154,12 +188,84 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 ```
 {"id":1,"title":"Spring REST Docs","author":"spring","publishedAt":"2024-09-27T08:43:41.898+00:00"}
 ```
-* 우리가 기대한 결과로 바꿔주기
+1. 우리가 기대한 결과로 바꿔주기
+    ```java
+    @Test
+    void getBook() throws Exception {
+        
+        mockMvc.perform(get("/books/{id}", 1L).accept(MediaType.APPLICATION_JSON)) // 5
+            .andExpect(status().isOk()) // 6
+            .andDo(document("get-a-book",
+                // 여기 수정
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()))
+            );
+    }
+    ```
+    * 위와 같이 코드 추가 후 다시 테스트 돌려보면 요청, 응답 스니펫이 예쁘게 나온 걸 확인할 수 있다.
+2. 중복 코드 리팩토링하기
+    ```java
+    @BeforeEach
+    void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentation) {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+            .apply(documentationConfiguration(restDocumentation))
+            .alwaysDo(document("get-a-book",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint())))
+            .build();
+    }
+    ```
+    * `MockMvc` 생성시 `alwagsDo()`를 사용하여 한번에 기본 설정을 할 수 있다.
 
 #### 4. HTML 예쁘게 만들기
-* 
+* [여기서 만든](#1-adoc파일-만들기) .adoc 파일을 아래 두 가지를 사용하여 개선
+    * Asciidoc 문법
+    * AsciiDoc 플러그인
+* 방법은 [여기](#해결) (문제 해결하면서 우연히 발견)
+* 여기까지 결과 화면
+![alt text](../img/spring/image2.png)
+### 5. REST하게 정보를 더 추가해서 완벽한 API 문서 완성하기
+```java
+@Test
+  void getBook() throws Exception {
 
+    mockMvc.perform(get("/books/{id}", 1L).accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value("1"))
+        .andExpect(jsonPath("$.title").value("Spring REST Docs"))
+        .andExpect(jsonPath("$.author").value("spring"))
 
+        .andDo(document("/get-a-book",
+            preprocessRequest(
+                prettyPrint(),
+                modifyUris()
+                    .scheme("https")
+                    .host("rest-api-docs.demo.com")
+                    .removePort() // 1
+            ),
+            preprocessResponse(prettyPrint()),
+            pathParameters( // 2
+                parameterWithName("id").description("책 ID")
+            ),
+            responseFields( // 3
+                fieldWithPath("id").description("책 ID"),
+                fieldWithPath("title").description("책 제목"),
+                fieldWithPath("author").description("저자"),
+                fieldWithPath("publishedAt").description("출판일"),
+                fieldWithPath("rating").description("평점").type(JsonFieldType.NUMBER).optional()
+            )
+        ));
+}
+```
+1. API의 호스트 변경.
+    * modifyUris()를 설정하지 않으면 요청 문서의 호스트가 기본값인 localhost:8080으로 작성됨 (스키마와 호스트, 포트 정보의 경우 테스트 클래스의 `@AutoConfigureRestDocs`에서 공통으로 처리할 수도 있음)
+2. `@PathVariable`에 들어가는 값을 문서화 하는 것
+    * 여기엔 없지만 `requestParameters`는 `@RequestParam`에 들어가는 값을 문서화한다.
+3. 응답 body 필드를 문서화 하는 것
+* 매번 테스트 코드 작성할 때마다 중복되어 작성하는 코드부분은 따로 유틸 클래스로 만들어서 커스텀 할 수 있다.
+
+### 최종 결과물
+![alt text](../img/spring/image4.png)
 
 
 
@@ -172,9 +278,9 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 
 ## 문제 해결
 ### ⚠ asciidoctor를 통해 index.adoc 파일을 읽어서 index.html 파일을 생성하는 작업에서 index.adoc 파일 내 including한 경로를 찾지 못해 발생하는 문제
-#### 발단
+> #### 발단
 * index.adoc 파일을 만들고 index.html로 문서를 확인하고 싶어서 asciidoctor을 실행시켰다.
-#### 문제
+> #### 문제
 * snippet 내용이 나올 줄 알았는데 index.html에 아래와 같은 내용이 나왔다.
 ```
 <p>Unresolved directive in index.adoc - include::{snippets}/get-a-book/curl-request.adoc[]
@@ -185,7 +291,7 @@ Unresolved directive in index.adoc - include::{snippets}/get-a-book/request-body
 Unresolved directive in index.adoc - include::{snippets}/get-a-book/response-body.adoc[]</p>
 ```
 경로를 찾을 수 없다는 것!
-#### 해결
+> #### 해결
 * 경로에 있는 {snippets} 값을 지정해주지 않아서 발생한 문제였다.
 * `:snippets: build/generated-snippets` 이렇게 snippets에 경로 저장
 * adoc 문법 모르는 주니어 개발자의 역경...
@@ -229,12 +335,33 @@ include::{snippets}/get-a-book/http-response.adoc[]
 include::{snippets}/get-a-book/response-body.adoc[]
 &nbsp;
 ```
+* index.html 결과 화면
+![alt text](../img/spring/image.png)
 
+### ⚠ URL 템플릿을 사용하였음에도, urlTemplate not found. If you are using MockMvc did you use RestDocumentationRequestBuilders to build the request? 발생
+> #### 발단
+API 문서에 다양한 정보를 추가하고 있는 중에 요청 파라미터 정보도 추가하기 위해 
+다음과 같은 코드를 추가 하였다.
+```java
+pathParameters(
+    parameterWithName("id").description("책 ID")
+)
+```
+> #### 문제
+```console
+java.lang.IllegalArgumentException: urlTemplate not found. If you are using MockMvc did you use RestDocumentationRequestBuilders to build the request?
+```
+테스트를 실행하면 위와 같은 에러가 발생하였다.
+> #### 해결
+* `get()`메소드가 `import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;`이게 아니라 `import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;`이걸 사용해야 한다.
+* import를 수정하고 테스트를 실행하면 다음과 같이 원하는 `path-parameters.adoc`가 생성된다.
+![alt text](../img/spring/image3.png)
 
 ## Reference
 https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#getting-started
 https://spring.io/projects/spring-restdocs
 https://www.youtube.com/watch?v=A3WDAVQP32k
 https://www.youtube.com/watch?v=BoVpTSsTuVQ
-https://velog.io/@glencode/Spring-REST-Docs-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-aka.-%EC%9E%90%EB%8F%99-API-%EB%AC%B8%EC%84%9C%ED%99%94#indexadoc
+https://velog.io/@glencode/Spring-REST-Docs-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0-aka.-%EC%9E%90%EB%8F%99-API-%EB%AC%B8%EC%84%9C%ED%99%94
 https://colabear754.tistory.com/218
+https://docs.spring.io/spring-restdocs/docs/2.0.7.RELEASE/reference/html5/
