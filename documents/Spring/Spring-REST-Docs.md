@@ -105,7 +105,7 @@ class BookControllerTest {
         
         ```
 2. `WebApplicationContext`를 테스트 컨텍스트에서 주입하기 위해 테스트 클래스에 Spring 컨텍스트를 로드해야 하는데, 이를 위해 `@SpringBootTest` 또는 `@WebMvcTest` 어노테이션을 사용해야 한다.
-여기서는 `MockMvc` 테스트를 진행 중이므로 `@WebMvcTest`를 사용한다. 이 어노테이션은 웹 계층(Controller)만 로드하고, 전체 애플리케이션 컨텍스트는 로드하지 않기 때문에 더 가볍다.
+여기서는 `MockMvc` 테스트를 진행 중이므로 `@WebMvcTest`를 사용한다. 이 어노테이션은 웹 계층(Controller)만 로드하고, 전체 애플리케이션 컨텍스트는 로드하지 않기 때문에 더 가볍다.(<u>단위 테스트: 보통 Spring REST Docs는 통합 테스트에 적용하지만, 지금은 실습이니 가볍게 단위테스트에 적용한다.</u>)
 3. 다음으로 `MockMVC`를 구성하는 `@Beforeeach` 메소드를 만든다.
 4. `Mockmvc` 인스턴스는 `MockmvcrestDocumentationConfigurer`를 사용하여 구성되는데, 이는 `org.springframework.restdocs.mockmvc.mockmvcrestdocumentation`의 정적 `documentationConfiguration ()` 메소드에서 생성한다.
 5. 테스트 프레임 워크를 구성 했으므로 이를 사용하여 나머지 서비스를 호출하고 요청 및 응답을 문서화 할 수 있다.
