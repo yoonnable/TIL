@@ -264,9 +264,51 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 3. 응답 body 필드를 문서화 하는 것
 * 매번 테스트 코드 작성할 때마다 중복되어 작성하는 코드부분은 따로 유틸 클래스로 만들어서 커스텀 할 수 있다.
 
-### 최종 결과물
+### 6. 최종 결과물
 ![alt text](../img/spring/image4.png)
 
+
+### 7. snippet 커스텀 하기
+* 요청 필드의 필수값 여부, 응답 필드의 Null 여부 표시하기
+1. 프로젝트 탐색기에서 External Libraries > `spring-restdocs-core` 펼치기
+2. templates > asciidoctor 을 펼치면, 테스트할 때 생성되는 스니펫의 포멧이 되는 .snippet 파일들이 존재
+![alt text](../img/spring/image5.png)
+3. `src/test/resource/org/springframework/restdocs/templates`에 `request-fields.snippet` 생성 후 2번에서 찾은 `default-request-fields.snippet`복붙
+4. 다움과 같이 수정.
+    * ※ 들여쓰기 절대 금지
+```
+|===
+|Name|Type|Required|Description
+
+{{#fields}}
+|{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
+|{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
+|{{#tableCellContent}}{{^optional}}o{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+
+{{/fields}}
+|===
+```
+5. 마찬가지로 3번과 같은 경로에 `response-fields.snippet` 생성 후 `default-response-fields.snippet` 복붙 후 다음과 같이 수정
+    * ※ 들여쓰기 절대 금지
+```
+|===
+|Name|Type|Nullable|Description
+
+{{#fields}}
+|{{#tableCellContent}}`+{{path}}+`{{/tableCellContent}}
+|{{#tableCellContent}}`+{{type}}+`{{/tableCellContent}}
+|{{#tableCellContent}}{{#optional}}o{{/optional}}{{/tableCellContent}}
+|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+
+{{/fields}}
+|===
+```
+6. 테스트 실행 후 snippet 결과 확인 ([e-commerce mall 프로젝트](https://github.com/f-lab-edu/e-commerce-mall))
+* request-fields.adoc
+![alt text](../img/spring/image6.png)
+* response-field.adoc
+![alt text](../img/spring/image7.png)
 
 
 
