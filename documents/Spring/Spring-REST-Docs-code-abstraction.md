@@ -46,8 +46,8 @@ public class RestDocsConfigration {
 }
 ```
 1. 현재 테스트는 로컬에서만 이루어 지고 있으며, 추후 배포 시 서버 정보가 바뀌는 것을 대비해 `src/main/resources/`경로에 있는 `application.yml` 을 활용하여 서버 정보를 주입받는다.
-2. 리턴값은 RestDocumentationResultHandler 인스턴스
-3. 각 테스트마다 생성되는 snippet의 최종 경로를 테스트 메소드 명으로 설정한다. 클래스명도 넣고 싶다면, `{class-name}` 으로 하면 된다. 여기서 '-'을 사용함으로써 디렉토리 명은 케밥 케이스로 명시된다.
+2. Spring REST Docs에서 테스트 결과를 처리하고 문서 스니펫(snippet)을 생성하는 역할을 하는 `RestDocumentationResultHandler` 를 리턴 타입으로 한다.
+3. 각 테스트마다 생성되는 snippet의 최종 경로를 각 테스트의 메소드 명으로 동적으로 설정한다. 클래스명도 넣고 싶다면, `{class-name}` 도 추가하면 된다. 여기서 '-'을 사용함으로써 디렉토리 명은 케밥 케이스로 명시된다.
 ## 2. setup 코드가 작성된 추상 클래스 생성
 * 중복되는 setup 코드를 추상화하여 RestDocs를 적용하는 모든 코드가 상속받아 사용할 수 있도록 한다.
 ```java
@@ -71,9 +71,10 @@ public abstract class AbstractRestDocsTests {
   }
 }
 ```
-1. 내가 만든 RestDocsConfigration클래스 import 명시
-2. 
-3. 이 클래스를 상속받은 테스트는 항상 restDocs 실행
+1. `RestDocsConfiguration` 클래스를 현재 테스트 클래스에 import하여 해당 클래스에서 정의된 빈(bean)을 restDocs에 주입한다.
+2. 테스트 실행 시마다 요청과 응답에 대한 정보를 콘솔에 출력하도록 한다.
+3. 모든 테스트 수행 시 restDocs 핸들러가 자동으로 실행하도록 한다. 각 테스트가 끝날 때마다 RESR Docs을 생성하는 문서화 작업이 자동으로 수행된다.
+
 ## 3. 일반 테스트 코드에 추상 클래스를 상속 받고 중복 코드 제거
 ```java
 @SpringBootTest
@@ -186,7 +187,7 @@ class ProductIntegrationTest extends AbstractRestDocsTests { // 1
 4. REST Docs 생성시 중복 설정 코드 제거하고 부모 클래스 필드인 restDocs를 사용
 
 ## 4. 테스트 실행 (결과 확인)
-* 추상화 전과 다르지 않는 .adoc파일이 생성되면 성공!
+* 예외나 에러가 발생하지 않고 전과 같은 .adoc파일이 생성되면 성공!
 
 
 ## Reference
