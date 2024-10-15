@@ -13,7 +13,7 @@
 ```
 * 바로 이 문서 이름과 요청, 응답 출력의 기본적인 설정 부분이다.
 * 코드 중복을 줄이기 위해 추상화 작업을 하겠다. (템플릿 메서드 패턴)
-## 1. COnfigration 클래스 생성
+## 1. Configration 클래스 생성
 * snippet 설정 코드(중복되는 코드)를 작성할 클래스를 생성한다.
 ```java
 @TestConfiguration
@@ -190,5 +190,5 @@ class ProductIntegrationTest extends AbstractRestDocsTests { // 1
 * 예외나 에러가 발생하지 않고 전과 같은 .adoc파일이 생성되면 성공!
 
 
-## Reference
+### Reference
 https://velog.io/@chaerim1001/Spring-Rest-Docs-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-AsciiDoc-%EB%AC%B8%EB%B2%95#buildgradle

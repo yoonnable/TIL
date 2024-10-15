@@ -223,7 +223,7 @@ include::{snippets}/get-a-book/curl-request.adoc[]
     * AsciiDoc 플러그인
 * 방법은 [여기](#해결) (문제 해결하면서 우연히 발견)
 * 여기까지 결과 화면
-![alt text](../img/spring/image2.png)
+![alt text](../../img/spring/image2.png)
 ### 5. REST하게 정보를 더 추가해서 완벽한 API 문서 완성하기
 ```java
 @Test
@@ -265,14 +265,14 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 * 매번 테스트 코드 작성할 때마다 중복되어 작성하는 코드부분은 따로 유틸 클래스로 만들어서 커스텀 할 수 있다.
 
 ### 6. 최종 결과물
-![alt text](../img/spring/image4.png)
+![alt text](../../img/spring/image4.png)
 
 
 ### 7. snippet 커스텀 하기
 * 요청 필드의 필수값 여부, 응답 필드의 Null 여부 표시하기
 1. 프로젝트 탐색기에서 External Libraries > `spring-restdocs-core` 펼치기
 2. templates > asciidoctor 을 펼치면, 테스트할 때 생성되는 스니펫의 포멧이 되는 .snippet 파일들이 존재
-![alt text](../img/spring/image5.png)
+![alt text](../../img/spring/image5.png)
 3. `src/test/resource/org/springframework/restdocs/templates`에 `request-fields.snippet` 생성 후 2번에서 찾은 `default-request-fields.snippet`복붙
 4. 다움과 같이 수정.
     * ※ 들여쓰기 절대 금지
@@ -306,9 +306,9 @@ include::{snippets}/get-a-book/curl-request.adoc[]
 ```
 6. 테스트 실행 후 snippet 결과 확인 ([e-commerce mall 프로젝트](https://github.com/f-lab-edu/e-commerce-mall))
 * request-fields.adoc
-![alt text](../img/spring/image6.png)
+![alt text](../../img/spring/image6.png)
 * response-field.adoc
-![alt text](../img/spring/image7.png)
+![alt text](../../img/spring/image7.png)
 
 
 
@@ -378,7 +378,7 @@ include::{snippets}/get-a-book/response-body.adoc[]
 &nbsp;
 ```
 * index.html 결과 화면
-![alt text](../img/spring/image.png)
+![alt text](../../img/spring/image.png)
 
 ### ⚠ URL 템플릿을 사용하였음에도, urlTemplate not found. If you are using MockMvc did you use RestDocumentationRequestBuilders to build the request? 발생
 > #### 발단
@@ -397,9 +397,9 @@ java.lang.IllegalArgumentException: urlTemplate not found. If you are using Mock
 > #### 해결
 * `get()`메소드가 `import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;`이게 아니라 `import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;`이걸 사용해야 한다.
 * import를 수정하고 테스트를 실행하면 다음과 같이 원하는 `path-parameters.adoc`가 생성된다.
-![alt text](../img/spring/image3.png)
+![alt text](../../img/spring/image3.png)
 
-## Reference
+### Reference
 https://docs.spring.io/spring-restdocs/docs/current/reference/htmlsingle/#getting-started
 https://spring.io/projects/spring-restdocs
 https://www.youtube.com/watch?v=A3WDAVQP32k
