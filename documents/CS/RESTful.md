@@ -54,7 +54,7 @@
 
      * 혼자 개발하거나, 진화에 관심이 없다면 REST를 신경쓰지 않아도 된다.
      * self-descriptive는 확장에 용이하고, HATEOAS는 동적 변경이 가능하므로 독립적 진화에 도움이 되는게 맞다.
-     * self-descriptive에 부합하는 API 만들기 -> Mediatype 정의 -> 자동화 도구 swagger, [Spring REST Docs](../Spring/Spring-REST-Docs.md) 사용!
+     * self-descriptive에 부합하는 API 만들기 -> Mediatype 정의 -> 자동화 도구 swagger, [Spring REST Docs](../Spring/SpringRESTDocs/Spring-REST-Docs.md) 사용!
 
 
 
