@@ -2,8 +2,6 @@
 ```
 ├─ documents
 │  ├─ Algorithm
-│  │  ├─ Factorial-zeros-solution.md
-│  │  └─ Sieve-of-Eratosthenes.md
 │  ├─ AWS
 │  │  ├─ basic
 │  │  │  └─ etc
