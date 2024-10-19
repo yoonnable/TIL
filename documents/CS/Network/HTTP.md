@@ -32,6 +32,20 @@ Content-Type: text/html
 <html>
 ```
 
+## 백엔드 개발자가 고민해야 할 3가지
+1. 정적 리소스를 어떻게 제공할지
+2. 동적 HTML 페이지을 어떻게 제공할지
+3. HTTP API를 어떻게 제공할지
+
+## HTTP API
+* HTML이 아니라 데이터를 전달한다.
+* 주로 JSON 형식을 사용해서 데이터를 전달한다.
+* 다양한 시스템에서 호출한다.
+    * 필요한 데이터만을 보냄
+    * UI 화면이 필요하면, 클라이언트가 별도 처리
+    * 앱, 웹 클라이언트, 서버 to **서버(API 서버)**
+
+
 
 ### Reference
 * https://docs.tosspayments.com/resources/glossary/http-protocol
