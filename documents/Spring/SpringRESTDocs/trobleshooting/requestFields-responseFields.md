@@ -1,6 +1,6 @@
 # 1. 요청 본문 값이 단순 문자열 하나 일 때, requestFields 설정 시 에러 발생
 ##### 관련 지식
-* [Spring REST Docs](../Spring/SpringRESTDocs/Spring-REST-Docs.md)
+* [Spring REST Docs](../Spring-REST-Docs.md)
 
 ## 문제
 * 문제의 코드

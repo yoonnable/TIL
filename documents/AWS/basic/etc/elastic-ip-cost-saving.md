@@ -1,6 +1,6 @@
 # AWS Elastic IP 비용 발생 문제 해결
 ## 문제 발생
-![alt text](../../../img/aws/image-3.png)
+![alt text](/documents/img/aws/image-3.png)
 야밤에 갑자기 웬 날벼락... 분명 강사님이 삭제하라는 건 다 했는데,,,
 어디서 돈이 줄줄 새고 있던 거지?ㅠㅠ
 
