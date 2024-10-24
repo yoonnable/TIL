@@ -56,6 +56,35 @@ public class HelloServlet extends HttpServlet {
 * [동시 요청을 위한 멀티 쓰레드](./Multi-threading.md) 처리를 지원한다.(천 명, 만 명이 동시에 접속해도 잘 돌아가는 이유)
 
 
+## HttpServletRequest
+* 서블릿이 개발자 대신 HTTP 요청 메시지를 파싱하는데, 그 결과를 담는 곳이 `HttpServletRequest` 객체이다.
+* `HttpServletRequest`를 사용하면 HTTP 요청 메시지를 편하게 조회할 수 있다.
+* HTTP 요청 메시지
+    ```
+    POST /save HTTP/1.1
+    Host: localhost:8080
+    Content-Type: application/x-www-form-urlencoded
+
+    username=Servlet
+    ```
+    * Start Line
+        * HTTP 메소드, URL, 쿼리 스트링, 스키마, 프로토콜
+    * 헤더
+        * 헤더조회
+    * 바디
+        * form 파라미터 형식 조회, message body 데이터 직접 조회
+
+* 부가 기능
+    * 임시 저장소 기능
+        * 해당 HTTP 요청이 시작부터 끝날 때까지 유지
+        * 저장: `request.setAttribute(name, value)`
+        * 조회: `request.getAttribute(name)`
+    * 세션 관리 기능
+        * `request.getSession(create: true)`
+
+* **중요**⭐
+    * `HttpServletRequest`, `HttpServletResponse` 이 객체들은 HTTP 요청 메시지, HTTP 응답 메시지를 편리하게 사용하도록 도와주는 객체이므로 깊이있는 이해를 위해서 **HTTP 스펙이 제공하는 요청, 응답 메시지 자체**를 해하고 있어야 한다.
+
 
 ---
 ##### [1] 싱글톤: 객체를 하나만 생성해서 공유하여 사옹하는 것 (new 안씀)
