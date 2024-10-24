@@ -85,6 +85,35 @@ public class HelloServlet extends HttpServlet {
 * **중요**⭐
     * `HttpServletRequest`, `HttpServletResponse` 이 객체들은 HTTP 요청 메시지, HTTP 응답 메시지를 편리하게 사용하도록 도와주는 객체이므로 깊이있는 이해를 위해서 **HTTP 스펙이 제공하는 요청, 응답 메시지 자체**를 해하고 있어야 한다.
 
+### HTTP 요청 데이터
+* 전송 방식
+    1. GET = 쿼리 파라미터
+        * /url`?username=servlet&age=20`
+        * 메시지 바디 없이, URL의 쿼리 파라미터에 데이터를 포함해서 전달
+        * 메시지 바디가 없기 때문에 content-type이 없다.
+        * 검색, 필터, 페이징 등에서 많이 사용하는 방식
+        * `HttpServletRequest`의 `getParameter()` 지원
+    2. POST - HTML Form
+        * `content-type: application/x-www-form-urlencoded`
+        * 메시지 바디에 쿼리 파라미터 형식으로 전달 `?username=servlet&age=20`
+        * 회원 가입, 상품 주문, HTML Form 사용
+        * `HttpServletRequest`의 `getParameter()` 지원(쿼리 파라미터 방식과 동일)
+    3. HTTP message body에 데이터를 **직접 담아서** 요청
+        * HTTP API에서 주로 사용, JSON, XML, TEXT
+        * 요즘 데이터 형식은 거의 JSON 사용
+        * POST, PUT, PATCH
+
+
+## HttpServletResponse
+* HTTP 응답 메시지 생성
+    * HTTP 응답코드 지정
+    * 헤더 생성
+    * 바디 생성
+* 편의 기능 제공
+    * Content-Type, Cookie, Redirect
+
+
+        
 
 ---
 ##### [1] 싱글톤: 객체를 하나만 생성해서 공유하여 사옹하는 것 (new 안씀)
